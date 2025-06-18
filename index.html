@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario HAQ - Evaluación de Salud</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .patient-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .patient-info input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .patient-info input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .question-group {
+            margin-bottom: 35px;
+        }
+
+        .group-title {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 12px;
+        }
+
+        .group-title span {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .question {
+            background: white;
+            border: 2px solid #f1f3f4;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            border-color: #4facfe;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.15);
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .option:hover {
+            border-color: #4facfe;
+            background: #f0f8ff;
+        }
+
+        .option.selected {
+            border-color: #4facfe;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .option label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .aids-section {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .aids-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .aids-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .aid-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .aid-option:hover {
+            background: #f8f9fa;
+        }
+
+        .aid-option input {
+            margin-right: 8px;
+        }
+
+        .results-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .results-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .results-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .whatsapp-message {
+            background: white;
+            border: 2px solid #25d366;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .copy-btn {
+            width: 100%;
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #128c7e;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .question {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Cuestionario HAQ</h1>
+            <p>Evaluación de Capacidad Funcional</p>
+        </div>
+
+        <div class="content">
+            <div class="patient-info">
+                <input type="text" id="patientName" placeholder="Nombre completo del paciente">
+                <input type="date" id="patientDate">
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <div class="aids-section">
+                <div class="aids-title">¿Utiliza ayudas técnicas o necesita ayuda de otra persona?</div>
+                <div class="aids-options">
+                    <label class="aid-option">
+                        <input type="checkbox" name="aids" value="baston"> Bastón
+                    </label>
+                    <label class="aid-option">
+                        <input type="checkbox" name="aids" value="andador"> Andador
+                    </label>
+                    <label class="aid-option">
+                        <input type="checkbox" name="aids" value="muletas"> Muletas
+                    </label>
+                    <label class="aid-option">
+                        <input type="checkbox" name="aids" value="silla"> Silla de ruedas
+                    </label>
+                    <label class="aid-option">
+                        <input type="checkbox" name="aids" value="ayuda"> Ayuda de otra persona
+                    </label>
+                    <label class="aid-option">
+                        <input type="checkbox" name="aids" value="ninguna"> Ninguna
+                    </label>
+                </div>
+            </div>
+
+            <button class="results-btn" onclick="generateResults()" id="generateBtn" disabled>
+                Generar Resultados para WhatsApp
+            </button>
+
+            <div class="results" id="results">
+                <h3>🎯 Mensaje para enviar por WhatsApp</h3>
+                <div class="whatsapp-message" id="whatsappMessage"></div>
+                <button class="copy-btn" onclick="copyToClipboard()">
+                    📋 Copiar mensaje
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                group: "🧥 Vestirse y Asearse",
+                items: [
+                    "¿Puede vestirse solo/a, incluyendo atar cordones y abrochar botones?",
+                    "¿Puede lavarse el cabello?"
+                ]
+            },
+            {
+                group: "🌅 Levantarse",
+                items: [
+                    "¿Puede levantarse de una silla sin brazos?",
+                    "¿Puede acostarse y levantarse de la cama?"
+                ]
+            },
+            {
+                group: "🍽️ Comer",
+                items: [
+                    "¿Puede cortar carne?",
+                    "¿Puede llevarse una taza o vaso lleno a la boca?",
+                    "¿Puede abrir un frasco nuevo de conservas?"
+                ]
+            },
+            {
+                group: "🚶 Caminar",
+                items: [
+                    "¿Puede caminar al aire libre en terreno llano?",
+                    "¿Puede subir cinco escalones?"
+                ]
+            },
+            {
+                group: "🧽 Higiene Personal",
+                items: [
+                    "¿Puede lavarse y secarse todo el cuerpo?",
+                    "¿Puede tomar un baño en bañera?",
+                    "¿Puede sentarse y levantarse del inodoro?"
+                ]
+            },
+            {
+                group: "🤲 Alcanzar",
+                items: [
+                    "¿Puede alcanzar y bajar un objeto de 2 kg desde una altura superior a su cabeza?",
+                    "¿Puede agacharse para recoger ropa del suelo?"
+                ]
+            },
+            {
+                group: "✋ Agarrar",
+                items: [
+                    "¿Puede abrir las puertas de un coche?",
+                    "¿Puede abrir frascos que han sido abiertos previamente?",
+                    "¿Puede abrir y cerrar grifos?"
+                ]
+            },
+            {
+                group: "🛠️ Actividades Comunes",
+                items: [
+                    "¿Puede hacer mandados y comprar?",
+                    "¿Puede entrar y salir de un coche?",
+                    "¿Puede hacer tareas domésticas como pasar la aspiradora o trabajos de jardinería?"
+                ]
+            }
+        ];
+
+        const options = [
+            { value: 0, text: "Sin ninguna dificultad" },
+            { value: 1, text: "Con alguna dificultad" },
+            { value: 2, text: "Con mucha dificultad" },
+            { value: 3, text: "Incapaz de hacerlo" }
+        ];
+
+        let questionIndex = 0;
+        let answers = {};
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            
+            questions.forEach((group, groupIndex) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'question-group';
+                
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.innerHTML = `<span>${group.group.split(' ')[0]}</span>${group.group.substring(group.group.indexOf(' ') + 1)}`;
+                groupDiv.appendChild(groupTitle);
+                
+                group.items.forEach((question, itemIndex) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'question';
+                    
+                    const questionText = document.createElement('div');
+                    questionText.className = 'question-text';
+                    questionText.textContent = `${questionIndex + 1}. ${question}`;
+                    
+                    const optionsDiv = document.createElement('div');
+                    optionsDiv.className = 'options';
+                    
+                    options.forEach(option => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'option';
+                        
+                        const radio = document.createElement('input');
+                        radio.type = 'radio';
+                        radio.name = `q${questionIndex}`;
+                        radio.value = option.value;
+                        radio.addEventListener('change', () => selectOption(questionIndex, option.value, optionDiv.parentElement));
+                        
+                        const label = document.createElement('label');
+                        label.textContent = option.text;
+                        label.addEventListener('click', () => {
+                            radio.checked = true;
+                            selectOption(questionIndex, option.value, optionDiv.parentElement);
+                        });
+                        
+                        optionDiv.appendChild(radio);
+                        optionDiv.appendChild(label);
+                        optionsDiv.appendChild(optionDiv);
+                    });
+                    
+                    questionDiv.appendChild(questionText);
+                    questionDiv.appendChild(optionsDiv);
+                    groupDiv.appendChild(questionDiv);
+                    
+                    questionIndex++;
+                });
+                
+                container.appendChild(groupDiv);
+            });
+        }
+
+        function selectOption(questionNum, value, optionsContainer) {
+            // Remove selected class from all options in this question
+            optionsContainer.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            event.target.closest('.option').classList.add('selected');
+            
+            answers[questionNum] = parseInt(value);
+            updateProgress();
+            checkCompletion();
+        }
+
+        function updateProgress() {
+            const totalQuestions = 20;
+            const answeredQuestions = Object.keys(answers).length;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function checkCompletion() {
+            const totalQuestions = 20;
+            const answeredQuestions = Object.keys(answers).length;
+            const generateBtn = document.getElementById('generateBtn');
+            
+            if (answeredQuestions === totalQuestions) {
+                generateBtn.disabled = false;
+            } else {
+                generateBtn.disabled = true;
+            }
+        }
+
+        function generateResults() {
+            const name = document.getElementById('patientName').value || 'No especificado';
+            const date = document.getElementById('patientDate').value || new Date().toISOString().split('T')[0];
+            
+            // Get selected aids
+            const selectedAids = Array.from(document.querySelectorAll('input[name="aids"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            // Calculate HAQ score
+            const scores = calculateHAQScore();
+            
+            let message = `📋 CUESTIONARIO HAQ - RESULTADOS\n\n`;
+            message += `👤 Paciente: ${name}\n`;
+            message += `📅 Fecha: ${date}\n\n`;
+            
+            message += `🎯 PUNTUACIÓN HAQ: ${scores.totalScore.toFixed(2)}\n\n`;
+            
+            message += `📊 PUNTUACIÓN POR CATEGORÍAS:\n`;
+            message += `• Vestirse/Asearse: ${scores.categories[0].toFixed(2)}\n`;
+            message += `• Levantarse: ${scores.categories[1].toFixed(2)}\n`;
+            message += `• Comer: ${scores.categories[2].toFixed(2)}\n`;
+            message += `• Caminar: ${scores.categories[3].toFixed(2)}\n`;
+            message += `• Higiene: ${scores.categories[4].toFixed(2)}\n`;
+            message += `• Alcanzar: ${scores.categories[5].toFixed(2)}\n`;
+            message += `• Agarrar: ${scores.categories[6].toFixed(2)}\n`;
+            message += `• Actividades: ${scores.categories[7].toFixed(2)}\n\n`;
+            
+            message += `📋 RESPUESTAS DETALLADAS:\n`;
+            let qIndex = 0;
+            questions.forEach((group, groupIndex) => {
+                message += `\n${group.group}:\n`;
+                group.items.forEach((question, itemIndex) => {
+                    const answer = answers[qIndex];
+                    const answerText = options[answer].text;
+                    message += `${qIndex + 1}. ${answer} (${answerText})\n`;
+                    qIndex++;
+                });
+            });
+            
+            if (selectedAids.length > 0) {
+                message += `\n🛠️ AYUDAS TÉCNICAS: ${selectedAids.join(', ')}\n`;
+            }
+            
+            message += `\n📱 Generado el ${new Date().toLocaleDateString('es-ES')}`;
+            
+            document.getElementById('whatsappMessage').textContent = message;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calculateHAQScore() {
+            const categoryRanges = [
+                [0, 2],   // Vestirse/Asearse (preguntas 0-1)
+                [2, 4],   // Levantarse (preguntas 2-3)
+                [4, 7],   // Comer (preguntas 4-6)
+                [7, 9],   // Caminar (preguntas 7-8)
+                [9, 12],  // Higiene (preguntas 9-11)
+                [12, 14], // Alcanzar (preguntas 12-13)
+                [14, 17], // Agarrar (preguntas 14-16)
+                [17, 20]  // Actividades (preguntas 17-19)
+            ];
+            
+            const categoryScores = categoryRanges.map(([start, end]) => {
+                const categoryAnswers = [];
+                for (let i = start; i < end; i++) {
+                    if (answers[i] !== undefined) {
+                        categoryAnswers.push(answers[i]);
+                    }
+                }
+                return categoryAnswers.length > 0 ? Math.max(...categoryAnswers) : 0;
+            });
+            
+            const totalScore = categoryScores.reduce((sum, score) => sum + score, 0) / categoryScores.length;
+            
+            return {
+                categories: categoryScores,
+                totalScore: totalScore
+            };
+        }
+
+        function copyToClipboard() {
+            const message = document.getElementById('whatsappMessage').textContent;
+            navigator.clipboard.writeText(message).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ ¡Copiado!';
+                btn.style.background = '#25d366';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '#25d366';
+                }, 2000);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            document.getElementById('patientDate').valueAsDate = new Date();
+        });
+    </script>
+</body>
+</html>
